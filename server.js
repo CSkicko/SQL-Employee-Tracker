@@ -44,10 +44,54 @@ function menu() {
             },
         ])
         .then((data) => {
-            console.log(data.selection);
-            return;
+            switch(data.selection) {
+                case 'View all departments':
+                    viewDept();
+                    break;
+                case 'View all roles':
+                    // viewRole();
+                    break;
+                case 'View all employees':
+                    // viewEmp();
+                    break;
+                case 'Add a department':
+                    // addDept();
+                    break;
+                case 'Add a role':
+                    // addRole();
+                    break;
+                case 'Add an employee':
+                    // addEmp();
+                    break;
+                case 'Update an employee role':
+                    // updateRole();
+                    break;
+                case 'Exit':
+                    console.log("Goodbye!")
+                    process.exit();
+                    break;
+            }
         });
 }
+
+function viewDept() {
+    db.query(queries.getDepts(), function (err, results) {
+        console.table(results);
+        menu();
+    });
+}
+
+// viewRole()
+
+// viewEmp()
+
+// addDept()
+
+// addRole()
+
+// addEmp()
+
+// updateRole()
 
 // Start listening on localhost port
 app.listen(PORT, () => {
