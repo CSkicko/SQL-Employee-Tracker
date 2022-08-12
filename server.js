@@ -24,28 +24,33 @@ const db = mysql.createConnection(
 );
 
 // Dummy queries to test sqlcmdr
-db.query(queries.getDepts(), function (err, results) {
-    console.log(results);
-});
-db.query(queries.getRoles(), function (err, results) {
-    console.log(results);
-});
-db.query(queries.getEmps(), function (err, results) {
-    console.log(results);
-});
-db.query(queries.addDept("Test Department 2"), function (err, results) {
-    console.log(results);
-});
-db.query(queries.addRole("Test Role", 1234, 1), function (err, results) {
-    console.log(results);
-});
-db.query(queries.addEmp("Test fName", "Test lName", 1, 1), function (err, results) {
-    console.log(results);
-});
-db.query(queries.updateEmpRole(1, 2), function (err, results) {
-    console.log(results);
-});
+function menu() {
+    inquirer
+        .prompt([
+            {
+                type: 'list',
+                message: 'What would you like to do?',
+                name: 'selection',
+                choices: [
+                    'View all departments', 
+                    'View all roles', 
+                    'View all employees', 
+                    'Add a department', 
+                    'Add a role', 
+                    'Add an employee', 
+                    'Update an employee role', 
+                    'Exit'
+                ],
+            },
+        ])
+        .then((data) => {
+            console.log(data.selection);
+            return;
+        });
+}
 
+// Start listening on localhost port
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+    menu();
   });
