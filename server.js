@@ -61,7 +61,7 @@ function menu() {
                     addRole();
                     break;
                 case 'Add an employee':
-                    // addEmp();
+                    addEmp();
                     break;
                 case 'Update an employee role':
                     // updateRole();
@@ -157,7 +157,74 @@ function addRole() {
     
 }
 
-// addEmp()
+function addEmp() {
+    let empList = [];
+    let empSelected;
+    let roleList = [];
+    let roleSelected;
+
+    // Get the list of Employees
+    db.query(queries.getEmps(), function (err, empResults) {
+        for (const employee of empResults) {
+            const fullName = `${employee.first_name} ${employee.last_name}`
+            empList.push(fullName);
+        }
+        console.log(empList);
+
+        // Get the list of roles
+        db.query(queries.getRoles(), function (err, roleResults) {
+            for (const role of roleResults) {
+                roleList.push(role.title);
+            }
+            console.log(roleList);
+
+            // Get the user inputed data
+            inquirer
+            .prompt([
+                {
+                    type: 'input',
+                    message: 'Please insert the first name of the new employee:',
+                    name: 'fname',
+                },
+                {
+                    type: 'input',
+                    message: 'Please insert the last name of the new employee:',
+                    name: 'lname',
+                },
+                {
+                    type: 'list',
+                    message: 'Please select the new employees role:',
+                    name: 'role',
+                    choices: roleList,
+                },
+                {
+                    type: 'list',
+                    message: 'Please select the new employees manager:',
+                    name: 'manager',
+                    choices: empList,
+                },
+            ])
+            .then((data) => {
+                // Get the id of the selected department
+                for (const role of roleResults) {
+                    if (data.role == role.title) {
+                        roleSelected = role.id;
+                    }
+                };
+                // Get the id of the selected manager
+                for (const emp of empResults) {
+                    if (data.manager.includes(emp.first_name) && data.manager.includes(emp.last_name)) {
+                        empSelected = emp.id;
+                    }
+                };
+                // Add the data to the database
+                db.query(queries.addEmp(data.fname, data.lname, roleSelected, empSelected), function (err, results) {
+                    console.log('New Employee Successfully Added! ');
+                    menu();
+                });
+            });
+    });
+})};
 
 // updateRole()
 
