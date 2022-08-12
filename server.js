@@ -49,13 +49,13 @@ function menu() {
                     viewDept();
                     break;
                 case 'View all roles':
-                    // viewRole();
+                    viewRole();
                     break;
                 case 'View all employees':
-                    // viewEmp();
+                    viewEmp();
                     break;
                 case 'Add a department':
-                    // addDept();
+                    addDept();
                     break;
                 case 'Add a role':
                     // addRole();
@@ -81,11 +81,36 @@ function viewDept() {
     });
 }
 
-// viewRole()
+function viewRole() {
+    db.query(queries.getRoles(), function (err, results) {
+        console.table(results);
+        menu();
+    });
+}
 
-// viewEmp()
+function viewEmp() {
+    db.query(queries.getEmps(), function (err, results) {
+        console.table(results);
+        menu();
+    });
+}
 
-// addDept()
+function addDept() {
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Please insert the new department name:',
+                name: 'department',
+            },
+        ])
+        .then((data) => {
+            db.query(queries.addDept(data.department), function (err, results) {
+                console.log('New Department Successfully Added!');
+                menu();
+            });
+        });
+}
 
 // addRole()
 
