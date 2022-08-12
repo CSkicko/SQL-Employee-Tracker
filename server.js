@@ -58,7 +58,7 @@ function menu() {
                     addDept();
                     break;
                 case 'Add a role':
-                    // addRole();
+                    addRole();
                     break;
                 case 'Add an employee':
                     // addEmp();
@@ -72,28 +72,28 @@ function menu() {
                     break;
             }
         });
-}
+};
 
 function viewDept() {
     db.query(queries.getDepts(), function (err, results) {
         console.table(results);
         menu();
     });
-}
+};
 
 function viewRole() {
     db.query(queries.getRoles(), function (err, results) {
         console.table(results);
         menu();
     });
-}
+};
 
 function viewEmp() {
     db.query(queries.getEmps(), function (err, results) {
         console.table(results);
         menu();
     });
-}
+};
 
 function addDept() {
     inquirer
@@ -110,9 +110,52 @@ function addDept() {
                 menu();
             });
         });
-}
+};
 
-// addRole()
+function addRole() {
+    let deptList = [];
+    let deptSelected;
+    // Get the list of departments
+    db.query(queries.getDepts(), function (err, deptResults) {
+        for (const department of deptResults) {
+            deptList.push(department.name);
+        }
+        // Get the user inputted data
+        inquirer
+        .prompt([
+            {
+                type: 'input',
+                message: 'Please insert the new role:',
+                name: 'role',
+            },
+            {
+                type: 'input',
+                message: 'Please insert the new role salary:',
+                name: 'salary',
+            },
+            {
+                type: 'list',
+                message: 'Please select the associated department for the new role:',
+                name: 'dept',
+                choices: deptList,
+            },
+        ])
+        .then((data) => {
+            // Get the id of the selected department
+            for (const department of deptResults) {
+                if (data.dept == department.name) {
+                    deptSelected = department.id;
+                }
+            };
+            // Add the data to the database
+            db.query(queries.addRole(data.role, data.salary, deptSelected), function (err, results) {
+                console.log('New Role Successfully Added!');
+                menu();
+            });
+        });
+    });
+    
+}
 
 // addEmp()
 
