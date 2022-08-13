@@ -64,7 +64,7 @@ function menu() {
                     addEmp();
                     break;
                 case 'Update an employee role':
-                    // updateRole();
+                    updateRole();
                     break;
                 case 'Exit':
                     console.log("Goodbye!")
@@ -223,10 +223,70 @@ function addEmp() {
                     menu();
                 });
             });
+        })
     });
-})};
+};
 
-// updateRole()
+function updateRole() {
+    let empList = [];
+    let empSelected;
+    let roleList = [];
+    let roleSelected;
+
+    db.query(queries.getEmps(), function (err, empResults) {
+        for (const employee of empResults) {
+            const fullName = `${employee.first_name} ${employee.last_name}`
+            empList.push(fullName);
+        }
+        console.log(empList);
+
+        // Get the list of roles
+        db.query(queries.getRoles(), function (err, roleResults) {
+            for (const role of roleResults) {
+                roleList.push(role.title);
+            }
+            console.log(roleList);
+
+            // Get the user inputed data
+            inquirer
+            .prompt([
+                {
+                    type: 'list',
+                    message: 'Please select the employee whos role you would like to update:',
+                    name: 'manager',
+                    choices: empList,
+                },
+                {
+                    type: 'list',
+                    message: 'Please select the employees new role:',
+                    name: 'role',
+                    choices: roleList,
+                },
+                
+            ])
+            .then((data) => {
+                // Get the id of the selected department
+                for (const role of roleResults) {
+                    if (data.role == role.title) {
+                        roleSelected = role.id;
+                    }
+                };
+                // Get the id of the selected manager
+                for (const emp of empResults) {
+                    if (data.manager.includes(emp.first_name) && data.manager.includes(emp.last_name)) {
+                        empSelected = emp.id;
+                    }
+                };
+
+                // Update the role in the database
+                db.query(queries.updateEmpRole(empSelected, roleSelected), function (err, results) {
+                    console.log('Employee role successfully updated!');
+                    menu();
+                });
+            });
+        })
+    });
+}
 
 // Start listening on localhost port
 app.listen(PORT, () => {
