@@ -169,7 +169,7 @@ function addEmp() {
             const fullName = `${employee.first_name} ${employee.last_name}`
             empList.push(fullName);
         }
-        console.log(empList);
+        empList.push('No Manager');
 
         // Get the list of roles
         db.query(queries.getRoles(), function (err, roleResults) {
@@ -212,11 +212,16 @@ function addEmp() {
                     }
                 };
                 // Get the id of the selected manager
-                for (const emp of empResults) {
-                    if (data.manager.includes(emp.first_name) && data.manager.includes(emp.last_name)) {
-                        empSelected = emp.id;
-                    }
-                };
+                if (data.manager == 'No Manager'){
+                    empSelected = null;
+                } else {
+                    for (const emp of empResults) {
+                        if (data.manager.includes(emp.first_name) && data.manager.includes(emp.last_name)) {
+                            empSelected = emp.id;
+                        }
+                    };
+                }
+                
                 // Add the data to the database
                 db.query(queries.addEmp(data.fname, data.lname, roleSelected, empSelected), function (err, results) {
                     console.log('New Employee Successfully Added! ');
