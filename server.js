@@ -176,7 +176,6 @@ function addEmp() {
             for (const role of roleResults) {
                 roleList.push(role.title);
             }
-            console.log(roleList);
 
             // Get the user inputed data
             inquirer
@@ -243,14 +242,12 @@ function updateRole() {
             const fullName = `${employee.first_name} ${employee.last_name}`
             empList.push(fullName);
         }
-        console.log(empList);
 
         // Get the list of roles
         db.query(queries.getRoles(), function (err, roleResults) {
             for (const role of roleResults) {
                 roleList.push(role.title);
             }
-            console.log(roleList);
 
             // Get the user inputed data
             inquirer
