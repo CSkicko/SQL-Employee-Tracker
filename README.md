@@ -34,6 +34,7 @@ To run the application on your local machine, complete the installation process 
 npm start
 ```
 A demonstration of the application is provided within the walkthrough video:
+[Walkthrough](./Walkthrough.webm)
 
 ## Collaborators
 The following personnel have been involved in the devleopment of this application:
